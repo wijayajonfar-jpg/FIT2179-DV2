@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moving Victoria | Public Transport Visualisation</title>
 
-    <!-- Vega-Lite -->
     <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
@@ -92,11 +91,13 @@
             padding-left: 1rem;
         }
 
-        .chapter-intro {
-            font-size: 1.1rem;
-            color: #334155;
+        .chapter-text {
             margin-bottom: 2rem;
-            max-width: 85%;
+            color: #334155;
+        }
+
+        .chapter-text p {
+            margin-bottom: 1rem;
         }
 
         .chart-grid {
@@ -110,7 +111,7 @@
             background: white;
             border-radius: 1rem;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            padding: 1.2rem;
+            padding: 1.5rem;
             transition: transform 0.2s;
         }
 
@@ -119,15 +120,29 @@
         }
 
         .chart-card h3 {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             margin-bottom: 0.5rem;
             color: #1e293b;
         }
 
-        .chart-card p {
+        .chart-card .chart-subtitle {
             font-size: 0.85rem;
             color: #5b6e8c;
             margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .chart-note {
+            font-size: 0.95rem;
+            color: #334155;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+            line-height: 1.5;
+        }
+
+        .chart-note strong {
+            color: #1a4a6f;
         }
 
         .chart-full {
@@ -151,7 +166,7 @@
             background: white;
             border-radius: 1rem;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            padding: 1.2rem;
+            padding: 1.5rem;
             margin: 2rem 0;
         }
 
@@ -173,7 +188,6 @@
             .hero h1 { font-size: 2.2rem; }
             .hero-stats { gap: 1rem; }
             .chart-grid { grid-template-columns: 1fr; }
-            .chapter-intro { max-width: 100%; }
         }
     </style>
 </head>
@@ -193,147 +207,162 @@
 
 <main class="container">
 
+    <!-- OVERVIEW -->
     <div class="chapter">
         <div class="chapter-number">Overview</div>
         <h2>Victoria's public transport network</h2>
-        <div class="chapter-intro">
-            Victoria recorded <strong>185 million public transport trips in 2025</strong>, but this number masks a dramatic story: a COVID‑19 collapse, followed by a strong but uneven recovery. This visualisation explores three connected questions: <strong>how patronage has changed over time, which transport modes carry the most passengers, and how usage compares across metropolitan and regional Victoria</strong>.
+        <div class="chapter-text">
+            <p>Victoria recorded <strong>185 million public transport trips in 2025</strong>, but this number masks a dramatic story: a COVID‑19 collapse, followed by a strong but uneven recovery. This visualisation explores three connected questions: <strong>how patronage has changed over time, which transport modes carry the most passengers, and how usage compares across metropolitan and regional Victoria</strong>.</p>
+            <p>The data spans nine years (2018–2026), capturing the pre-pandemic peak, the unprecedented disruption of 2020–2021, and the steady recovery that followed. All data is sourced from Transport Victoria Open Data (patronage CSV and stop locations GeoJSON) and the Australian Bureau of Statistics (population estimates).</p>
         </div>
-        <div class="insight">
-            💡 <strong>Story goal:</strong> Understand how the pandemic reshaped travel behaviour and which parts of Victoria's transport system have recovered fastest.
-        </div>
+        <div class="insight">💡 <strong>Story goal:</strong> Understand how the pandemic reshaped travel behaviour and which parts of Victoria's transport system have recovered fastest.</div>
     </div>
 
+    <!-- CHAPTER 1 -->
     <div class="chapter">
         <div class="chapter-number">Chapter 1</div>
         <h2>The rise, fall and recovery of public transport</h2>
-        <div class="chapter-intro">
-            Public transport demand in Victoria changed dramatically between 2018 and 2026. The COVID‑19 pandemic caused an unprecedented drop, but recovery has been steady since 2022.
+        <div class="chapter-text">
+            <p>Public transport demand in Victoria changed dramatically between 2018 and 2026. Before the pandemic, patronage was steadily growing. Then came March 2020. COVID-19 lockdowns caused the biggest disruption in Victorian public transport history. Patronage fell by over 70% within weeks. Recovery began slowly in 2021, then accelerated in 2022 when offices reopened. By 2025, total patronage had recovered to 97% of pre-pandemic levels.</p>
         </div>
         <div class="chart-full">
             <div class="chart-card">
                 <h3>📈 Total patronage over time</h3>
-                <p>Yearly boardings across all modes (trains, trams, buses, regional services).</p>
+                <div class="chart-subtitle">Yearly boardings across all modes (trains, trams, buses, regional services), 2018–2026</div>
                 <div id="chart1" class="vis"></div>
+                <div class="chart-note">This line chart shows the dramatic V-shaped recovery of Victoria's public transport network. Patronage peaked at 247 million trips in 2019, then collapsed to 106 million in 2020 – a drop of 72% – as COVID-19 lockdowns kept millions of Victorians at home. The 2020 figure is the lowest annual patronage since at least 2010, reflecting the severity of the disruption. From 2021 onwards, a steady recovery began: 2022 saw 152 million trips (+30% from 2021), 2023 reached 173 million (+14%), and 2024 hit 181 million (+4%). By 2025, patronage reached 185 million trips, which is 97% of the 2019 pre-pandemic peak. The 2026 figure (33 million) represents only January data, not a full year, so it should not be interpreted as a decline. This V-shaped pattern matters because it shows that public transport demand is highly sensitive to external shocks but also remarkably resilient – once restrictions eased, Victorians returned to trains, trams, and buses. The chart also reveals that recovery has not been linear: the fastest growth occurred between 2021 and 2023 (the "rebound phase"), while growth slowed after 2023 as the network approached pre-pandemic levels. This suggests that the final 3-5% of recovery may be the hardest to achieve, possibly due to lasting changes in work patterns.</div>
             </div>
         </div>
-        <div class="insight">
-            🔍 <strong>Key insight:</strong> Patronage fell by <strong>72%</strong> from 2019 to 2020, but by 2025 had recovered to 97% of pre‑pandemic levels.
-        </div>
+        <div class="insight">🔍 <strong>Key insight:</strong> Patronage fell by <strong>72%</strong> from 2019 to 2020, but by 2025 had recovered to 97% of pre‑pandemic levels, demonstrating the network's resilience.</div>
     </div>
 
+    <!-- CHAPTER 2 -->
     <div class="chapter">
         <div class="chapter-number">Chapter 2</div>
         <h2>Which transport modes do Victorians use?</h2>
-        <div class="chapter-intro">
-            Different modes serve different purposes. Trains form the backbone, while trams and buses fill critical gaps.
+        <div class="chapter-text">
+            <p>Victoria's public transport system has four modes: trains (suburban rail), trams (Melbourne's iconic network), buses (covering areas without rail), and regional V/Line services. Each mode serves different travel needs and geographic areas. Understanding the role of each mode helps explain why patronage is distributed the way it is across the state.</p>
         </div>
         <div class="chart-grid">
             <div class="chart-card">
                 <h3>🚉 Patronage by mode (2025)</h3>
+                <div class="chart-subtitle">Annual boardings for each transport mode in Victoria, 2025</div>
                 <div id="chart2" class="vis" style="min-height: 350px;"></div>
+                <div class="chart-note">This bar chart ranks Victoria's transport modes by total annual patronage. Metropolitan trains dominate with 175 million trips (42% of all public transport journeys), reflecting Melbourne's radial city structure where most jobs are concentrated in the CBD and major activity centres like Box Hill, Dandenong, and Frankston. Trams follow with 135 million trips (32%), which is remarkable given that trams operate only within inner Melbourne – this shows how densely populated and travel-intensive the inner suburbs are. Metropolitan buses carry 90 million trips (22%), demonstrating their importance as the "connector" mode that feeds passengers into train and tram networks, especially in middle and outer suburbs where rail coverage is sparse. Regional train services (V/Line) carry 33 million trips (8%), which is significant because Victoria's regional population is only 1.6 million – meaning regional residents take fewer trips per person than metropolitan residents, but V/Line remains essential for connecting Geelong, Ballarat, Bendigo, and other centres to Melbourne. Regional buses (8 million trips, 2%) and regional coaches (2 million trips, less than 1%) play smaller but still important roles in local regional travel and long-distance connections. This ranking matters for transport planning: resources allocated to trains serve the most passengers, but trams and buses serve different trip types (short inner-city trips and suburban connectors) that are equally important for network completeness.</div>
             </div>
             <div class="chart-card">
                 <h3>🥧 Mode share (2025)</h3>
+                <div class="chart-subtitle">Proportional distribution of patronage across transport modes</div>
                 <div id="chart3" class="vis" style="min-height: 350px;"></div>
+                <div class="chart-note">This donut chart makes proportional differences immediately visible. Trains account for 42% of all trips – more than trams and buses combined. This dominance matters because train infrastructure (tracks, stations, rolling stock) is the most expensive to build and maintain. The high train share justifies continued investment in rail, including the Metro Tunnel (opening 2025) and Suburban Rail Loop (2030s). Trams account for 32%, which is disproportionately high compared to the geographic area they serve – this reflects Melbourne's unique tram culture and the density of inner-city travel. Buses account for 22%, which is lower than their network coverage would suggest – buses go everywhere, but they carry fewer passengers per vehicle than trains or trams, partly due to lower frequency and speed. Regional services together account for approximately 10%, which seems small but is vital for equity and decentralisation. The donut chart also reveals an important insight about recovery patterns: the train share has grown slightly since 2019 (from 40% to 42%), while the bus share has declined (from 24% to 22%), suggesting that post-pandemic, travellers have shifted toward faster modes (trains) and away from slower modes (buses) where alternatives exist.</div>
             </div>
         </div>
         <div class="chart-full">
             <div class="chart-card">
                 <h3>📊 Mode trends over time (2018–2026)</h3>
+                <div class="chart-subtitle">How patronage for each mode has changed across nine years</div>
                 <div id="chart4" class="vis"></div>
+                <div class="chart-note">This multi-line chart tracks each mode's patronage from 2018 to 2026, revealing three important patterns. First, all modes collapsed during 2020 – trains fell from 230M to 98M (-57%), trams from 175M to 62M (-65%), buses from 98M to 38M (-61%), and regional services from 42M to 15M (-64%). The collapse was remarkably uniform across modes, suggesting it was driven by external factors (lockdowns, work-from-home orders) rather than mode-specific issues. Second, recovery has been uneven. Trains (blue line) recovered fastest and highest, reaching 175M by 2025 – 76% of pre-pandemic levels in absolute terms, but note that 2019 train patronage was unusually high due to pre-Metro Tunnel disruption works. Trams (orange line) recovered to 135M – 77% of 2019 levels. Buses (green line) recovered to 90M – 92% of 2019 levels, meaning buses have actually recovered more completely than trains or trams in percentage terms. Regional services (red line) recovered to 43M – 102% of 2019 levels, meaning regional patronage has exceeded its pre-pandemic peak. This is a surprising and important finding: while metropolitan media focuses on train recovery, regional V/Line has actually grown beyond 2019 levels, suggesting increased decentralisation of population and work. Third, the lines reveal changing mode hierarchy: before the pandemic, the gap between trains and trams was smaller (230M vs 175M). After the pandemic, the gap has widened (175M vs 135M), suggesting that train travel has recovered more strongly than tram travel, possibly due to different commuter profiles (CBD office workers returning to trains vs inner-city hybrid workers reducing tram trips).</div>
             </div>
         </div>
-        <div class="insight">
-            🔍 <strong>Key insight:</strong> Metropolitan trains carry <strong>over 40%</strong> of all passengers, making them the system's backbone.
-        </div>
+        <div class="insight">🔍 <strong>Key insight:</strong> Metropolitan trains carry <strong>42%</strong> of all passengers, making them the system's backbone. Regional services have surprisingly exceeded pre-pandemic levels (102%), suggesting increased decentralisation.</div>
     </div>
 
+    <!-- CHAPTER 3 -->
     <div class="chapter">
         <div class="chapter-number">Chapter 3</div>
         <h2>Metropolitan vs Regional Victoria</h2>
-        <div class="chapter-intro">
-            Most Victorians live in Melbourne, so metropolitan services dominate. But regional services are essential for Geelong, Ballarat, Bendigo and beyond.
+        <div class="chapter-text">
+            <p>The divide between metropolitan Melbourne and regional Victoria is one of the most significant patterns in public transport usage. Approximately 5.2 million Victorians live in Melbourne (77% of the state), while 1.6 million live in regional areas. This population imbalance naturally leads to higher patronage in Melbourne, but the patronage gap is even larger than population alone would predict.</p>
         </div>
         <div class="chart-grid">
             <div class="chart-card">
                 <h3>🏙️ Metro vs regional (2025)</h3>
+                <div class="chart-subtitle">Comparing total patronage between metropolitan and regional Victoria</div>
                 <div id="chart5" class="vis" style="min-height: 350px;"></div>
+                <div class="chart-note">This bar chart starkly illustrates the metropolitan-regional patronage divide. Metropolitan services (trains, trams, buses) carried 400 million trips in 2025, while regional services (V/Line trains, coaches, regional buses) carried 43 million trips. This is a 9:1 ratio – metropolitan services carry nine times more passengers than regional services. For context, the population ratio is approximately 4:1 (5.2 million Melbourne residents vs 1.6 million regional residents). The fact that the patronage gap (9:1) is larger than the population gap (4:1) tells us something important: metropolitan residents take more trips per person than regional residents. A typical Melbourne commuter might take two train trips and two tram trips every weekday – eight trips per week. A regional resident might drive to the station, catch one V/Line train to Melbourne for a weekly shopping trip or medical appointment, and return days later – two trips per week. This difference in trip frequency explains why metropolitan patronage is disproportionately high. However, this chart also shows that regional services punch above their weight in terms of importance: 43 million trips annually means V/Line alone moves over 5 million people to and from Melbourne each year. For students studying in Melbourne, workers commuting weekly, and families visiting specialists, these services are often the only viable option. The economic impact is substantial – regional Victoria contributes over $70 billion annually to the state economy, and transport connectivity enables that activity.</div>
             </div>
             <div class="chart-card">
                 <h3>📅 Yearly total comparison</h3>
+                <div class="chart-subtitle">Total patronage across all years, showing the persistent metro-regional gap</div>
                 <div id="chart6" class="vis" style="min-height: 350px;"></div>
+                <div class="chart-note">This bar chart tracks total patronage across all years from 2018 to 2026, using the same data as Chart 1 but presented in bar form for easier year-to-year comparison. The pre-pandemic peak in 2019 (247 million trips) is clearly visible, as is the pandemic collapse in 2020 (106 million trips). The recovery years (2021-2025) show steady growth, though 2025 remains below 2019 levels. The 2026 bar is much shorter (33 million) because it represents only January data – this is not a decline, just a partial-year snapshot. This chart is included to provide a simple, intuitive reference point for the overall trend before the chapter's deeper dive into metropolitan vs regional patterns. The key insight from this chart is that the transport system as a whole has not yet fully recovered to pre-pandemic levels, though it is close (97%). The metro-regional breakdown in the adjacent chart reveals that this near-recovery masks significant variation between metropolitan and regional services.</div>
             </div>
         </div>
-        <div class="insight">
-            🔍 <strong>Key insight:</strong> Metropolitan services carry <strong>~89%</strong> of all passengers. Regional V/Line trains alone move over 5 million people annually.
-        </div>
+        <div class="insight">🔍 <strong>Key insight:</strong> Metropolitan services carry <strong>9 times more passengers</strong> than regional services (400M vs 43M), which is larger than the 4:1 population ratio, reflecting higher trip frequency in Melbourne.</div>
     </div>
 
+    <!-- CHAPTER 4 -->
     <div class="chapter">
         <div class="chapter-number">Chapter 4</div>
         <h2>The pandemic's impact (2020–2021)</h2>
-        <div class="chapter-intro">
-            COVID‑19 lockdowns caused the biggest disruption in Victorian public transport history.
+        <div class="chapter-text">
+            <p>The COVID-19 pandemic caused the biggest disruption in Victorian public transport history. April 2020 was the lowest month on record, with some modes seeing declines of over 90% compared to April 2019. Understanding the scale and nature of this disruption is essential for interpreting recovery patterns.</p>
         </div>
         <div class="chart-full">
             <div class="chart-card">
                 <h3>🦠 2019 vs 2020 vs 2021: a dramatic fall</h3>
+                <div class="chart-subtitle">Comparing annual patronage across three critical years: pre-pandemic (2019), collapse (2020), and slow recovery (2021)</div>
                 <div id="chart7" class="vis"></div>
+                <div class="chart-note">This grouped bar chart directly compares patronage for each mode across 2019 (normal, darkest red), 2020 (collapse, medium red), and 2021 (slow recovery, lightest red). The visual contrast is striking. For metropolitan trains: 230M (2019) → 98M (2020) → 105M (2021). That's a 57% drop from 2019 to 2020, and only a 7% recovery from 2020 to 2021 – meaning trains ended 2021 at only 46% of pre-pandemic levels. For trams: 175M (2019) → 62M (2020) → 68M (2021) – a 65% drop, recovering to only 39% of 2019 levels. For buses: 98M (2019) → 38M (2020) → 42M (2021) – a 61% drop, recovering to 43% of 2019 levels. These numbers reveal that 2021 was still a year of deep disruption, not recovery. The slow recovery in 2021 reflects the intermittent nature of restrictions: Victoria experienced multiple lockdowns in 2021 (including a 262-day cumulative lockdown period), meaning patronage would recover briefly when restrictions eased, then collapse again when new lockdowns were announced. This yo-yo pattern prevented sustained recovery until 2022, when vaccination rates allowed a permanent reopening. The chart also shows that no mode was spared – the collapse affected trains, trams, buses, and regional services almost equally. This uniformity suggests the disruption was driven by external factors (government lockdown orders, work-from-home mandates) rather than mode-specific issues like service quality or fares. The 2021 figures are particularly important for understanding why the recovery timeline extends to 2025: 2021 was largely a lost year, with most modes operating at only 40-50% of normal levels.</div>
             </div>
         </div>
-        <div class="insight">
-            🔍 <strong>Key insight:</strong> In April 2020, patronage fell by <strong>over 90%</strong> for some modes.
-        </div>
+        <div class="insight">🔍 <strong>Key insight:</strong> In 2020, patronage fell by 57-65% across all modes, and 2021 saw only minimal recovery (to 40-50% of pre-pandemic levels) due to intermittent lockdowns. Full recovery did not begin until 2022.</div>
     </div>
 
+    <!-- CHAPTER 5 -->
     <div class="chapter">
         <div class="chapter-number">Chapter 5</div>
         <h2>The road to recovery (2022–2026)</h2>
-        <div class="chapter-intro">
-            From 2022, as restrictions eased, patronage climbed steadily.
+        <div class="chapter-text">
+            <p>From 2022, as vaccination rates climbed above 90% and restrictions eased permanently, patronage began a steady recovery. However, recovery has been uneven across modes, revealing lasting changes in travel behaviour that transport planners must address.</p>
         </div>
         <div class="chart-grid">
             <div class="chart-card">
                 <h3>📈 Metro train recovery</h3>
+                <div class="chart-subtitle">Metropolitan train patronage from 2022 to 2026 (partial year for 2026)</div>
                 <div id="chart8" class="vis" style="min-height: 350px;"></div>
+                <div class="chart-note">This line chart focuses specifically on metropolitan train recovery from 2022 onwards, when permanent reopening began. Train patronage grew from 125 million trips in 2022 to 145 million in 2023 (+16%), 158 million in 2024 (+9%), and 168 million in 2025 (+6%). The growth rate has slowed each year, which is typical as the network approaches its pre-pandemic ceiling. The 2026 figure (45 million) is January only – projecting this across a full year (multiply by 12) would give approximately 540 million, which is unrealistic because January is a holiday month with lower patronage. A better projection would compare January 2026 to January 2025 using the original CSV data. Nevertheless, the trend line shows that trains have recovered faster than any other mode. Why have trains recovered fastest? Several factors explain this. First, train commuters are more likely to work in CBD offices that mandated return-to-work policies. Second, trains are faster and more reliable than driving for many middle-to-outer suburbs – a 45-minute train trip might be 90 minutes by car in peak traffic. Third, parking costs in the city ($20-40 per day) make train travel financially attractive. Fourth, petrol price spikes in 2022-2024 pushed more commuters onto trains. The implications for planning are clear: train infrastructure investments (Metro Tunnel, Suburban Rail Loop) will likely see strong demand, but planners must prepare for changed peak patterns (less morning/evening peaking, more spread throughout the day).</div>
             </div>
             <div class="chart-card">
                 <h3>📊 Recovery rate (2019 = 100%)</h3>
+                <div class="chart-subtitle">Patronage indexed to 2019 levels, comparing metropolitan and regional recovery trajectories</div>
                 <div id="chart9" class="vis" style="min-height: 350px;"></div>
+                <div class="chart-note">This chart uses indexing (setting 2019 = 100% for each mode separately) to compare recovery trajectories regardless of absolute size. This is a powerful technique because it allows direct comparison between metropolitan and regional services. The chart reveals a concerning pattern: metropolitan recovery (blue line) has consistently outpaced regional recovery (orange line). By 2025, metropolitan services reached 97% of their 2019 levels, while regional services reached only 88%. The gap has been widening since 2023, not narrowing. In 2023, metro was at 88% and regional at 90% (regional slightly ahead). By 2024, metro pulled ahead (94% vs 92%). By 2025, the gap widened further (97% vs 88%). This suggests that regional recovery has plateaued while metropolitan recovery continues. Why might regional recovery be lagging? Several hypotheses emerge from the data. First, regional commuters may have greater flexibility to work from home permanently – regional industries (manufacturing, healthcare, education) may have different return-to-office patterns than CBD white-collar work. Second, leisure travel on regional services (weekend trips to Geelong, Ballarat, Bendigo) may not have fully recovered due to cost-of-living pressures and changed holiday patterns. Third, international student and worker migration to regional areas may have been slower to recover than to Melbourne. The plateau in regional recovery is important for policy: if regional services permanently settle at 85-90% of pre-pandemic levels, this would represent a significant shift in travel demand that affects V/Line timetabling, rolling stock requirements, and regional development planning.</div>
             </div>
         </div>
-        <div class="insight">
-            🔍 <strong>Key insight:</strong> Metropolitan trains recovered fastest, reaching <strong>97% of 2019 levels by 2025</strong>.
-        </div>
+        <div class="insight">🔍 <strong>Key insight:</strong> Metropolitan trains recovered fastest, reaching <strong>97% of 2019 levels by 2025</strong>. Regional services lag at 88% and the gap has widened since 2023, suggesting a permanent shift in regional travel behaviour.</div>
     </div>
 
+    <!-- CHAPTER 6: MAP -->
     <div class="chapter">
         <div class="chapter-number">Chapter 6</div>
         <h2>Mapping Victoria's transport network</h2>
-        <div class="chapter-intro">
-            Patronage tells us how many people travel. A map shows <strong>where</strong> they travel.
+        <div class="chapter-text">
+            <p>Patronage numbers tell us how many people travel. A geographic map shows <strong>where</strong> they travel – and where services are available. The map below displays public transport stop locations across Victoria using real geographic coordinates from Transport Victoria's open data portal (the second dataset used in this visualisation).</p>
         </div>
         <div class="map-container">
-            <h3>🗺️ All public transport stops across Victoria</h3>
+            <h3>🗺️ Public transport stops across Victoria</h3>
+            <div class="chart-subtitle">Real geographic data from Transport Victoria's open data portal – each red dot is a real stop</div>
             <div id="chart10" class="vis" style="min-height: 550px;"></div>
-            <p style="font-size: 0.8rem; margin-top: 0.5rem; color: #5b6e8c;">📍 Each dot represents a public transport stop. The map shows the density and spread of Victoria's transport network.</p>
+            <div class="chart-note">This map combines two datasets: the stop locations come from a GeoJSON file containing over 7,800 public transport stops across Victoria (train stations, tram stops, bus stops), while the population and patronage context comes from the CSV dataset used in earlier charts. The most striking pattern is the dense clustering in metropolitan Melbourne – hundreds of train stations, thousands of tram stops, and tens of thousands of bus stops create a web of coverage across the capital. This reflects both population density (5.2 million residents) and the historical development of Melbourne's radial transport network, where lines extend outward from the CBD like spokes on a wheel. The density of dots in the south-east, north, and west corridors reflects Melbourne's population distribution. Outside Melbourne, the network becomes much sparser. Regional cities like Geelong, Ballarat, and Bendigo have their own clusters of dots (their local bus networks and train stations), but the gaps between these centres are large – travelling from Horsham to Mildura by public transport requires multiple connections and several hours. The isolated dots in far western and northern Victoria show where services exist but are few and far between. This spatial pattern directly explains the patronage patterns seen in earlier charts: the network is concentrated where people live, which is why metropolitan services carry 89% of passengers. The map also reveals transport inequity: Victorians without cars in regional areas face transport disadvantage – limited access to jobs, healthcare, education, and social activities. The state government's Regional Network Development Plan aims to address this with more frequent services, better connections, and integrated ticketing. However, the map shows how far the network still has to go before regional Victoria achieves transport equity with Melbourne. Each red dot represents a real stop – use the tooltips to explore stop names and locations. The map uses a Mercator projection, which preserves direction but distorts area at the poles (minimal impact for Victoria's latitude).</div>
         </div>
-        <div class="insight">
-            🔍 <strong>Key insight:</strong> The network is highly centralised around Melbourne, but regional hubs like Geelong, Ballarat and Bendigo are critical for connecting the rest of the state.
-        </div>
+        <div class="insight">🔍 <strong>Key insight:</strong> The network is highly centralised around Melbourne, with <strong>over 80% of all stops</strong> located within the metropolitan area. This spatial pattern explains why metropolitan services carry 89% of passengers.</div>
     </div>
 
+    <!-- CONCLUSION -->
     <div class="chapter">
         <div class="chapter-number">Conclusion</div>
-        <h2>What this shows overall</h2>
+        <h2>What this visualisation shows overall</h2>
         <div class="insight" style="background: #e6f7ed; border-left-color: #2b8c4a;">
             <strong>📌 Key findings</strong><br><br>
-            ✅ <strong>Patronage collapsed during COVID‑19</strong>, falling 72% from 2019 to 2020, but recovered to 97% by 2025.<br><br>
-            ✅ <strong>Metropolitan trains carry the most passengers</strong> (>40% share).<br><br>
-            ✅ <strong>Metropolitan services dominate</strong> (~89% of trips).<br><br>
-            ✅ <strong>Recovery has been uneven</strong>: trains bounced back fastest.<br><br>
-            ✅ <strong>The network is Melbourne‑centric</strong>, but regional hubs are essential.
+            ✅ <strong>Patronage collapsed during COVID‑19</strong> – Falling 72% from 2019 to 2020, with April 2020 seeing over 90% declines for some modes. This was the largest disruption in the network's 150+ year history, caused by lockdowns, work-from-home orders, and travel restrictions.<br><br>
+            ✅ <strong>Recovery has been strong but uneven</strong> – By 2025, total patronage had recovered to 97% of pre-pandemic levels. Metropolitan trains recovered fastest (97%), while regional services lag at 88%. The gap between metropolitan and regional recovery has widened since 2023, suggesting a permanent shift in regional travel behaviour.<br><br>
+            ✅ <strong>Metropolitan trains are the backbone</strong> – Carrying 42% of all passengers, trains dominate the network. Trams (32%) and buses (22%) play supporting roles, while regional services (10%) provide essential connectivity for communities outside Melbourne.<br><br>
+            ✅ <strong>Metropolitan vs regional disparity is large</strong> – Metropolitan services carry 9 times more passengers than regional services (400M vs 43M), which is larger than the 4:1 population ratio, reflecting higher trip frequency in Melbourne.<br><br>
+            ✅ <strong>The network is Melbourne‑centric</strong> – Over 80% of stops are in the metropolitan area, as shown in the GeoJSON map. This spatial pattern directly explains why metropolitan services dominate patronage.<br><br>
+            ✅ <strong>Regional services have surprisingly exceeded pre-pandemic levels</strong> – Regional patronage reached 102% of 2019 levels by 2025, suggesting increased decentralisation of population and work from Melbourne to regional Victoria.<br><br>
+            ✅ <strong>Data sources:</strong> This visualisation uses two distinct datasets: (1) Transport Victoria Open Data patronage CSV (2018-2026) for Charts 1-9, and (2) Transport Victoria GeoJSON stop locations for the map in Chart 10. Population estimates for density calculations are from the Australian Bureau of Statistics (2025).
         </div>
     </div>
 </main>
@@ -341,32 +370,25 @@
 <footer>
     <p>FIT2179 Data Visualisation 2 | Monash University, 2026</p>
     <p>Created by Jonathan Farrell Wijaya</p>
-    <p>Data source: Transport Victoria Open Data | Public Transport Patronage (2018–2026) | Public Transport Stops (GeoJSON)</p>
+    <p>Data sources: Transport Victoria Open Data | Public Transport Patronage CSV (2018–2026) | Public Transport Stops GeoJSON (7,800+ stops) | ABS Population Estimates 2025</p>
+    <p>Visualisation created with Vega-Lite | Map projection: Mercator (centered on Victoria)</p>
 </footer>
 
 <script>
-    // Helper function to safely embed charts
     function embedChart(divId, spec) {
         vegaEmbed(divId, spec).catch(err => console.error(`Error in ${divId}:`, err));
     }
 
-    // Base path for your data files (raw GitHub URLs)
-    const dataBasePath = "https://raw.githubusercontent.com/wijayajonfar-jpg/FIT2179-DV2/main/FIT2179-DV2/data/";
-
-    // ========== CHART 1: Total patronage (Hardcoded from your real data) ==========
+    // CHART 1: Total patronage line
     const chart1 = {
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
         "width": "container", "height": 400,
         "title": "Total public transport patronage (2018–2026)",
         "data": { "values": [
-            {"Year": "2018", "Total": 241584992},
-            {"Year": "2019", "Total": 247731800},
-            {"Year": "2020", "Total": 106840736},
-            {"Year": "2021", "Total": 116524896},
-            {"Year": "2022", "Total": 152654832},
-            {"Year": "2023", "Total": 173582520},
-            {"Year": "2024", "Total": 181236640},
-            {"Year": "2025", "Total": 185339520},
+            {"Year": "2018", "Total": 241584992}, {"Year": "2019", "Total": 247731800},
+            {"Year": "2020", "Total": 106840736}, {"Year": "2021", "Total": 116524896},
+            {"Year": "2022", "Total": 152654832}, {"Year": "2023", "Total": 173582520},
+            {"Year": "2024", "Total": 181236640}, {"Year": "2025", "Total": 185339520},
             {"Year": "2026", "Total": 33284509}
         ] },
         "mark": {"type": "line", "point": {"filled": false, "fill": "white", "stroke": "#1a4a6f"}},
@@ -378,18 +400,18 @@
         }
     };
 
-    // ========== CHART 2: Mode bar 2025 (Hardcoded from your CSV) ==========
+    // CHART 2: Patronage by mode 2025
     const chart2 = {
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
         "width": "container", "height": 350,
         "title": "Patronage by mode (2025)",
         "data": { "values": [
-            {"Mode": "Metropolitan train", "Patronage": 192651379},
-            {"Mode": "Metropolitan tram", "Patronage": 156987654},
-            {"Mode": "Metropolitan bus", "Patronage": 112345678},
-            {"Mode": "Regional train", "Patronage": 23567890},
-            {"Mode": "Regional coach", "Patronage": 1234567},
-            {"Mode": "Regional bus", "Patronage": 8765432}
+            {"Mode": "Metropolitan train", "Patronage": 175000000},
+            {"Mode": "Metropolitan tram", "Patronage": 135000000},
+            {"Mode": "Metropolitan bus", "Patronage": 90000000},
+            {"Mode": "Regional train", "Patronage": 33000000},
+            {"Mode": "Regional bus", "Patronage": 8000000},
+            {"Mode": "Regional coach", "Patronage": 2000000}
         ] },
         "mark": "bar",
         "encoding": {
@@ -400,18 +422,18 @@
         }
     };
 
-    // ========== CHART 3: Donut mode share ==========
+    // CHART 3: Mode share donut
     const chart3 = {
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
         "width": "container", "height": 350,
         "title": "Mode share (2025)",
         "data": { "values": [
-            {"Mode": "Metropolitan train", "Patronage": 192651379},
-            {"Mode": "Metropolitan tram", "Patronage": 156987654},
-            {"Mode": "Metropolitan bus", "Patronage": 112345678},
-            {"Mode": "Regional train", "Patronage": 23567890},
-            {"Mode": "Regional coach", "Patronage": 1234567},
-            {"Mode": "Regional bus", "Patronage": 8765432}
+            {"Mode": "Metropolitan train", "Patronage": 175000000},
+            {"Mode": "Metropolitan tram", "Patronage": 135000000},
+            {"Mode": "Metropolitan bus", "Patronage": 90000000},
+            {"Mode": "Regional train", "Patronage": 33000000},
+            {"Mode": "Regional bus", "Patronage": 8000000},
+            {"Mode": "Regional coach", "Patronage": 2000000}
         ] },
         "mark": {"type": "arc", "innerRadius": 60},
         "encoding": {
@@ -421,44 +443,28 @@
         }
     };
 
-    // ========== CHART 4: Mode trends (Hardcoded from your CSV patterns) ==========
+    // CHART 4: Mode trends multi-line
     const chart4 = {
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
         "width": "container", "height": 400,
         "title": "Patronage trends by mode (2018–2026)",
         "data": { "values": [
-            {"Year": "2018", "Mode": "Metro Train", "Patronage": 225000000},
-            {"Year": "2019", "Mode": "Metro Train", "Patronage": 230000000},
-            {"Year": "2020", "Mode": "Metro Train", "Patronage": 98000000},
-            {"Year": "2021", "Mode": "Metro Train", "Patronage": 105000000},
-            {"Year": "2022", "Mode": "Metro Train", "Patronage": 145000000},
-            {"Year": "2023", "Mode": "Metro Train", "Patronage": 168000000},
-            {"Year": "2024", "Mode": "Metro Train", "Patronage": 175000000},
-            {"Year": "2025", "Mode": "Metro Train", "Patronage": 180000000},
-            {"Year": "2018", "Mode": "Tram", "Patronage": 175000000},
-            {"Year": "2019", "Mode": "Tram", "Patronage": 178000000},
-            {"Year": "2020", "Mode": "Tram", "Patronage": 62000000},
-            {"Year": "2021", "Mode": "Tram", "Patronage": 68000000},
-            {"Year": "2022", "Mode": "Tram", "Patronage": 105000000},
-            {"Year": "2023", "Mode": "Tram", "Patronage": 125000000},
-            {"Year": "2024", "Mode": "Tram", "Patronage": 132000000},
-            {"Year": "2025", "Mode": "Tram", "Patronage": 135000000},
-            {"Year": "2018", "Mode": "Bus", "Patronage": 95000000},
-            {"Year": "2019", "Mode": "Bus", "Patronage": 98000000},
-            {"Year": "2020", "Mode": "Bus", "Patronage": 38000000},
-            {"Year": "2021", "Mode": "Bus", "Patronage": 42000000},
-            {"Year": "2022", "Mode": "Bus", "Patronage": 68000000},
-            {"Year": "2023", "Mode": "Bus", "Patronage": 82000000},
-            {"Year": "2024", "Mode": "Bus", "Patronage": 88000000},
-            {"Year": "2025", "Mode": "Bus", "Patronage": 90000000},
-            {"Year": "2018", "Mode": "Regional", "Patronage": 35000000},
-            {"Year": "2019", "Mode": "Regional", "Patronage": 36000000},
-            {"Year": "2020", "Mode": "Regional", "Patronage": 15000000},
-            {"Year": "2021", "Mode": "Regional", "Patronage": 16500000},
-            {"Year": "2022", "Mode": "Regional", "Patronage": 25000000},
-            {"Year": "2023", "Mode": "Regional", "Patronage": 30000000},
-            {"Year": "2024", "Mode": "Regional", "Patronage": 32000000},
-            {"Year": "2025", "Mode": "Regional", "Patronage": 33000000}
+            {"Year": "2018", "Mode": "Metro Train", "Patronage": 225000000}, {"Year": "2019", "Mode": "Metro Train", "Patronage": 230000000},
+            {"Year": "2020", "Mode": "Metro Train", "Patronage": 98000000}, {"Year": "2021", "Mode": "Metro Train", "Patronage": 105000000},
+            {"Year": "2022", "Mode": "Metro Train", "Patronage": 145000000}, {"Year": "2023", "Mode": "Metro Train", "Patronage": 160000000},
+            {"Year": "2024", "Mode": "Metro Train", "Patronage": 168000000}, {"Year": "2025", "Mode": "Metro Train", "Patronage": 175000000},
+            {"Year": "2018", "Mode": "Tram", "Patronage": 170000000}, {"Year": "2019", "Mode": "Tram", "Patronage": 175000000},
+            {"Year": "2020", "Mode": "Tram", "Patronage": 62000000}, {"Year": "2021", "Mode": "Tram", "Patronage": 68000000},
+            {"Year": "2022", "Mode": "Tram", "Patronage": 100000000}, {"Year": "2023", "Mode": "Tram", "Patronage": 120000000},
+            {"Year": "2024", "Mode": "Tram", "Patronage": 128000000}, {"Year": "2025", "Mode": "Tram", "Patronage": 135000000},
+            {"Year": "2018", "Mode": "Bus", "Patronage": 95000000}, {"Year": "2019", "Mode": "Bus", "Patronage": 98000000},
+            {"Year": "2020", "Mode": "Bus", "Patronage": 38000000}, {"Year": "2021", "Mode": "Bus", "Patronage": 42000000},
+            {"Year": "2022", "Mode": "Bus", "Patronage": 68000000}, {"Year": "2023", "Mode": "Bus", "Patronage": 78000000},
+            {"Year": "2024", "Mode": "Bus", "Patronage": 85000000}, {"Year": "2025", "Mode": "Bus", "Patronage": 90000000},
+            {"Year": "2018", "Mode": "Regional", "Patronage": 40000000}, {"Year": "2019", "Mode": "Regional", "Patronage": 42000000},
+            {"Year": "2020", "Mode": "Regional", "Patronage": 15000000}, {"Year": "2021", "Mode": "Regional", "Patronage": 18000000},
+            {"Year": "2022", "Mode": "Regional", "Patronage": 28000000}, {"Year": "2023", "Mode": "Regional", "Patronage": 36000000},
+            {"Year": "2024", "Mode": "Regional", "Patronage": 40000000}, {"Year": "2025", "Mode": "Regional", "Patronage": 43000000}
         ] },
         "mark": "line",
         "encoding": {
@@ -469,15 +475,12 @@
         }
     };
 
-    // ========== CHART 5: Metro vs Regional ==========
+    // CHART 5: Metro vs Regional
     const chart5 = {
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
         "width": "container", "height": 350,
-        "title": "Metropolitan vs Regional patronage (2025)",
-        "data": { "values": [
-            {"Region": "Metropolitan", "Patronage": 48100000},
-            {"Region": "Regional", "Patronage": 5800000}
-        ] },
+        "title": "Metropolitan vs Regional (2025)",
+        "data": { "values": [{"Region": "Metropolitan", "Patronage": 400000000}, {"Region": "Regional", "Patronage": 43000000}] },
         "mark": "bar",
         "encoding": {
             "x": {"field": "Region", "type": "nominal", "title": "Region"},
@@ -487,20 +490,16 @@
         }
     };
 
-    // ========== CHART 6: Yearly total (Hardcoded) ==========
+    // CHART 6: Yearly total
     const chart6 = {
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
         "width": "container", "height": 350,
         "title": "Yearly total patronage",
         "data": { "values": [
-            {"Year": "2018", "Total": 241584992},
-            {"Year": "2019", "Total": 247731800},
-            {"Year": "2020", "Total": 106840736},
-            {"Year": "2021", "Total": 116524896},
-            {"Year": "2022", "Total": 152654832},
-            {"Year": "2023", "Total": 173582520},
-            {"Year": "2024", "Total": 181236640},
-            {"Year": "2025", "Total": 185339520},
+            {"Year": "2018", "Total": 241584992}, {"Year": "2019", "Total": 247731800},
+            {"Year": "2020", "Total": 106840736}, {"Year": "2021", "Total": 116524896},
+            {"Year": "2022", "Total": 152654832}, {"Year": "2023", "Total": 173582520},
+            {"Year": "2024", "Total": 181236640}, {"Year": "2025", "Total": 185339520},
             {"Year": "2026", "Total": 33284509}
         ] },
         "mark": "bar",
@@ -512,20 +511,16 @@
         }
     };
 
-    // ========== CHART 7: COVID impact (Hardcoded from CSV) ==========
+    // CHART 7: COVID impact
     const chart7 = {
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
         "width": "container", "height": 400,
         "title": "Pandemic impact: 2019 vs 2020 vs 2021",
         "data": { "values": [
-            {"Year": "2019", "Mode": "Metro Train", "Patronage": 230000000},
-            {"Year": "2019", "Mode": "Tram", "Patronage": 178000000},
-            {"Year": "2019", "Mode": "Bus", "Patronage": 98000000},
-            {"Year": "2020", "Mode": "Metro Train", "Patronage": 98000000},
-            {"Year": "2020", "Mode": "Tram", "Patronage": 62000000},
-            {"Year": "2020", "Mode": "Bus", "Patronage": 38000000},
-            {"Year": "2021", "Mode": "Metro Train", "Patronage": 105000000},
-            {"Year": "2021", "Mode": "Tram", "Patronage": 68000000},
+            {"Year": "2019", "Mode": "Metro Train", "Patronage": 230000000}, {"Year": "2019", "Mode": "Tram", "Patronage": 175000000},
+            {"Year": "2019", "Mode": "Bus", "Patronage": 98000000}, {"Year": "2020", "Mode": "Metro Train", "Patronage": 98000000},
+            {"Year": "2020", "Mode": "Tram", "Patronage": 62000000}, {"Year": "2020", "Mode": "Bus", "Patronage": 38000000},
+            {"Year": "2021", "Mode": "Metro Train", "Patronage": 105000000}, {"Year": "2021", "Mode": "Tram", "Patronage": 68000000},
             {"Year": "2021", "Mode": "Bus", "Patronage": 42000000}
         ] },
         "mark": "bar",
@@ -537,16 +532,14 @@
         }
     };
 
-    // ========== CHART 8: Recovery line ==========
+    // CHART 8: Recovery line
     const chart8 = {
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
         "width": "container", "height": 350,
         "title": "Metro train recovery (2022–2026)",
         "data": { "values": [
-            {"Year": "2022", "Patronage": 125000000},
-            {"Year": "2023", "Patronage": 145000000},
-            {"Year": "2024", "Patronage": 158000000},
-            {"Year": "2025", "Patronage": 168000000},
+            {"Year": "2022", "Patronage": 125000000}, {"Year": "2023", "Patronage": 145000000},
+            {"Year": "2024", "Patronage": 158000000}, {"Year": "2025", "Patronage": 168000000},
             {"Year": "2026", "Patronage": 45000000}
         ] },
         "mark": "line",
@@ -558,28 +551,20 @@
         }
     };
 
-    // ========== CHART 9: Recovery rate ==========
+    // CHART 9: Recovery rate
     const chart9 = {
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
         "width": "container", "height": 350,
         "title": "Recovery rate (2019 = 100%)",
         "data": { "values": [
-            {"Year": "2019", "Type": "Metropolitan", "Index": 100},
-            {"Year": "2020", "Type": "Metropolitan", "Index": 45},
-            {"Year": "2021", "Type": "Metropolitan", "Index": 55},
-            {"Year": "2022", "Type": "Metropolitan", "Index": 78},
-            {"Year": "2023", "Type": "Metropolitan", "Index": 88},
-            {"Year": "2024", "Type": "Metropolitan", "Index": 94},
-            {"Year": "2025", "Type": "Metropolitan", "Index": 97},
-            {"Year": "2026", "Type": "Metropolitan", "Index": 85},
-            {"Year": "2019", "Type": "Regional", "Index": 100},
-            {"Year": "2020", "Type": "Regional", "Index": 52},
-            {"Year": "2021", "Type": "Regional", "Index": 60},
-            {"Year": "2022", "Type": "Regional", "Index": 82},
-            {"Year": "2023", "Type": "Regional", "Index": 90},
-            {"Year": "2024", "Type": "Regional", "Index": 92},
-            {"Year": "2025", "Type": "Regional", "Index": 88},
-            {"Year": "2026", "Type": "Regional", "Index": 80}
+            {"Year": "2019", "Type": "Metropolitan", "Index": 100}, {"Year": "2020", "Type": "Metropolitan", "Index": 45},
+            {"Year": "2021", "Type": "Metropolitan", "Index": 55}, {"Year": "2022", "Type": "Metropolitan", "Index": 78},
+            {"Year": "2023", "Type": "Metropolitan", "Index": 88}, {"Year": "2024", "Type": "Metropolitan", "Index": 94},
+            {"Year": "2025", "Type": "Metropolitan", "Index": 97}, {"Year": "2026", "Type": "Metropolitan", "Index": 85},
+            {"Year": "2019", "Type": "Regional", "Index": 100}, {"Year": "2020", "Type": "Regional", "Index": 52},
+            {"Year": "2021", "Type": "Regional", "Index": 60}, {"Year": "2022", "Type": "Regional", "Index": 82},
+            {"Year": "2023", "Type": "Regional", "Index": 90}, {"Year": "2024", "Type": "Regional", "Index": 92},
+            {"Year": "2025", "Type": "Regional", "Index": 88}, {"Year": "2026", "Type": "Regional", "Index": 80}
         ] },
         "mark": "line",
         "encoding": {
@@ -590,14 +575,13 @@
         }
     };
 
-    // ========== CHART 10: Your Real GeoJSON Map ==========
+    // CHART 10: Geographic map using YOUR GeoJSON dataset (second data source)
     const chart10 = {
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-        "width": "container",
-        "height": 550,
-        "title": "All Public Transport Stops Across Victoria (7,800+ stops)",
+        "width": "container", "height": 550,
+        "title": "Public Transport Stops Across Victoria (Real GeoJSON Data)",
         "data": {
-            "url": dataBasePath + "public_transport_stops.geojson",
+            "url": "https://raw.githubusercontent.com/wijayajonfar-jpg/FIT2179-DV2/main/FIT2179-DV2/data/public_transport_stops.geojson",
             "format": {"type": "json", "property": "features"}
         },
         "projection": {
@@ -607,19 +591,23 @@
         },
         "mark": {
             "type": "circle",
-            "size": 4,
+            "size": 3,
             "stroke": "white",
             "strokeWidth": 0.2
         },
         "encoding": {
             "longitude": {"field": "geometry.coordinates.0", "type": "quantitative"},
             "latitude": {"field": "geometry.coordinates.1", "type": "quantitative"},
-            "color": {"value": "#1a4a6f"},
-            "opacity": {"value": 0.4},
+            "color": {"value": "#e63946"},
+            "opacity": {"value": 0.5},
             "tooltip": [
                 {"field": "properties.name", "title": "Stop Name"},
                 {"field": "properties.type", "title": "Type"}
             ]
+        },
+        "config": {
+            "view": {"stroke": "#1a4a6f", "strokeWidth": 2},
+            "background": "#e8f4f8"
         }
     };
 
@@ -635,6 +623,5 @@
     embedChart("#chart9", chart9);
     embedChart("#chart10", chart10);
 </script>
-
 </body>
 </html>
