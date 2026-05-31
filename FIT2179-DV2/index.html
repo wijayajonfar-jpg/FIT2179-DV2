@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moving Victoria | Public Transport Visualisation</title>
+
+    <!-- Vega-Lite -->
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #0f2b3d 0%, #1a4a6f 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            border-bottom: 4px solid #ffb347;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(8px);
+            padding: 0.8rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Chapter styling */
+        .chapter {
+            margin: 5rem 0;
+        }
+
+        .chapter-number {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #1a4a6f;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .chapter h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #0f2b3d;
+            border-left: 5px solid #ffb347;
+            padding-left: 1rem;
+        }
+
+        .chapter-intro {
+            font-size: 1.1rem;
+            color: #334155;
+            margin-bottom: 2rem;
+            max-width: 85%;
+        }
+
+        /* Chart grid */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 1.2rem;
+            transition: transform 0.2s;
+        }
+
+        .chart-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .chart-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+        }
+
+        .chart-card p {
+            font-size: 0.85rem;
+            color: #5b6e8c;
+            margin-bottom: 1rem;
+        }
+
+        .chart-full {
+            margin: 2rem 0;
+        }
+
+        .insight {
+            background: #eef2ff;
+            border-left: 4px solid #1a4a6f;
+            padding: 1.2rem 1.5rem;
+            border-radius: 0.75rem;
+            margin: 1.5rem 0;
+            font-weight: 500;
+        }
+
+        .insight strong {
+            color: #0f2b3d;
+        }
+
+        .map-container {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 1.2rem;
+            margin: 2rem 0;
+        }
+
+        footer {
+            background: #0f2b3d;
+            color: #cbd5e1;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+            font-size: 0.85rem;
+        }
+
+        .vis {
+            min-height: 400px;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2rem; }
+            .hero-stats { gap: 1rem; }
+            .chart-grid { grid-template-columns: 1fr; }
+            .chapter-intro { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <div class="container">
+        <h1>🚆 Moving Victoria</h1>
+        <div class="hero-subtitle">Public transport patronage, network recovery, and how Victorians move across the state</div>
+        <div class="hero-stats">
+            <div class="stat"><span class="stat-number">185M+</span><br>annual trips (2025)</div>
+            <div class="stat"><span class="stat-number">-72%</span><br>pandemic low (2020)</div>
+            <div class="stat"><span class="stat-number">97%</span><br>recovered by 2025</div>
+        </div>
+    </div>
+</div>
+
+<main class="container">
+
+    <!-- Overview -->
+    <div class="chapter">
+        <div class="chapter-number">Overview</div>
+        <h2>Victoria’s public transport network</h2>
+        <div class="chapter-intro">
+            Victoria recorded <strong>185 million public transport trips in 2025</strong>, but this number masks a dramatic story: a COVID‑19 collapse, followed by a strong but uneven recovery. This visualisation explores three connected questions: <strong>how patronage has changed over time, which transport modes carry the most passengers, and how usage compares across metropolitan and regional Victoria</strong>.
+        </div>
+        <div class="insight">
+            💡 <strong>Story goal:</strong> Understand how the pandemic reshaped travel behaviour and which parts of Victoria’s transport system have recovered fastest.
+        </div>
+    </div>
+
+    <!-- Chapter 1: Rise, fall, recovery -->
+    <div class="chapter">
+        <div class="chapter-number">Chapter 1</div>
+        <h2>The rise, fall and recovery of public transport</h2>
+        <div class="chapter-intro">
+            Public transport demand in Victoria changed dramatically between 2018 and 2026. The COVID‑19 pandemic caused an unprecedented drop, but recovery has been steady since 2022.
+        </div>
+
+        <div class="chart-full">
+            <div class="chart-card">
+                <h3>📈 Total patronage over time</h3>
+                <p>Yearly boardings across all modes (trains, trams, buses, regional services).</p>
+                <div id="chart1" class="vis"></div>
+            </div>
+        </div>
+
+        <div class="insight">
+            🔍 <strong>Key insight:</strong> Patronage fell by <strong>72%</strong> from 2019 to 2020, but by 2025 had recovered to 97% of pre‑pandemic levels. The resilience of Victoria’s transport network is remarkable.
+        </div>
+    </div>
+
+    <!-- Chapter 2: Which modes do Victorians use? -->
+    <div class="chapter">
+        <div class="chapter-number">Chapter 2</div>
+        <h2>Which transport modes do Victorians use?</h2>
+        <div class="chapter-intro">
+            Different modes serve different purposes. Trains form the backbone, while trams and buses fill critical gaps. Regional services connect communities beyond Melbourne.
+        </div>
+
+        <div class="chart-grid">
+            <div class="chart-card">
+                <h3>🚉 Patronage by mode (2025)</h3>
+                <div id="chart2" class="vis" style="min-height: 350px;"></div>
+            </div>
+            <div class="chart-card">
+                <h3>🥧 Mode share (2025)</h3>
+                <div id="chart3" class="vis" style="min-height: 350px;"></div>
+            </div>
+        </div>
+
+        <div class="chart-full">
+            <div class="chart-card">
+                <h3>📊 Mode trends over time (2018–2026)</h3>
+                <div id="chart4" class="vis"></div>
+            </div>
+        </div>
+
+        <div class="insight">
+            🔍 <strong>Key insight:</strong> Metropolitan trains carry <strong>over 40%</strong> of all passengers, making them the system’s backbone. Trams and buses each contribute ~20–25%, while regional services account for the remainder.
+        </div>
+    </div>
+
+    <!-- Chapter 3: Metro vs Regional -->
+    <div class="chapter">
+        <div class="chapter-number">Chapter 3</div>
+        <h2>Metropolitan vs Regional Victoria</h2>
+        <div class="chapter-intro">
+            Most Victorians live in Melbourne, so it’s no surprise that metropolitan services dominate. But regional services are essential for connecting Geelong, Ballarat, Bendigo and beyond.
+        </div>
+
+        <div class="chart-grid">
+            <div class="chart-card">
+                <h3>🏙️ Metro vs regional patronage (2025)</h3>
+                <div id="chart5" class="vis" style="min-height: 350px;"></div>
+            </div>
+            <div class="chart-card">
+                <h3>📅 Yearly total comparison</h3>
+                <div id="chart6" class="vis" style="min-height: 350px;"></div>
+            </div>
+        </div>
+
+        <div class="insight">
+            🔍 <strong>Key insight:</strong> Metropolitan services carry <strong>~89%</strong> of all passengers. However, regional V/Line trains alone move over 5 million people per year – vital for non‑Melbourne communities.
+        </div>
+    </div>
+
+    <!-- Chapter 4: The pandemic’s impact -->
+    <div class="chapter">
+        <div class="chapter-number">Chapter 4</div>
+        <h2>The pandemic’s impact (2020–2021)</h2>
+        <div class="chapter-intro">
+            COVID‑19 lockdowns and work‑from‑home orders caused the biggest disruption in Victorian public transport history. The drop was deepest in April 2020.
+        </div>
+
+        <div class="chart-full">
+            <div class="chart-card">
+                <h3>🦠 2019 vs 2020 vs 2021: a dramatic fall</h3>
+                <div id="chart7" class="vis"></div>
+            </div>
+        </div>
+
+        <div class="insight">
+            🔍 <strong>Key insight:</strong> In April 2020, patronage fell by <strong>over 90%</strong> for some modes. The recovery began slowly in 2021 as restrictions eased.
+        </div>
+    </div>
+
+    <!-- Chapter 5: Recovery -->
+    <div class="chapter">
+        <div class="chapter-number">Chapter 5</div>
+        <h2>The road to recovery (2022–2026)</h2>
+        <div class="chapter-intro">
+            From 2022, as borders reopened and offices recalled workers, patronage climbed steadily. Some modes recovered faster than others.
+        </div>
+
+        <div class="chart-grid">
+            <div class="chart-card">
+                <h3>📈 Metro train recovery (2022–2026)</h3>
+                <div id="chart8" class="vis" style="min-height: 350px;"></div>
+            </div>
+            <div class="chart-card">
+                <h3>📊 Recovery rate (2019 = 100%)</h3>
+                <div id="chart9" class="vis" style="min-height: 350px;"></div>
+            </div>
+        </div>
+
+        <div class="insight">
+            🔍 <strong>Key insight:</strong> Metropolitan trains recovered fastest, reaching <strong>97% of 2019 levels by 2025</strong>. Buses and regional services have been slower, suggesting persistent changes in travel habits.
+        </div>
+    </div>
+
+    <!-- Chapter 6: Geographic map -->
+    <div class="chapter">
+        <div class="chapter-number">Chapter 6</div>
+        <h2>Mapping Victoria’s transport network</h2>
+        <div class="chapter-intro">
+            Patronage tells us how many people travel. A map shows <strong>where</strong> they travel. Victoria’s network is densest in Melbourne but extends to every regional centre.
+        </div>
+
+        <div class="map-container">
+            <h3>🗺️ Major transport hubs across Victoria</h3>
+            <div id="chart10" class="vis" style="min-height: 550px;"></div>
+            <p style="font-size: 0.8rem; margin-top: 0.5rem; color: #5b6e8c;">📍 Each circle represents a major station or stop. Size indicates relative importance.</p>
+        </div>
+
+        <div class="insight">
+            🔍 <strong>Key insight:</strong> The network is highly centralised around Melbourne, but regional hubs like Geelong, Ballarat and Bendigo are critical for connecting the rest of the state.
+        </div>
+    </div>
+
+    <!-- Conclusion -->
+    <div class="chapter">
+        <div class="chapter-number">Conclusion</div>
+        <h2>What this shows overall</h2>
+        <div class="insight" style="background: #e6f7ed; border-left-color: #2b8c4a;">
+            <strong>📌 Key findings</strong><br><br>
+            ✅ <strong>Patronage collapsed during COVID‑19</strong>, falling 72% from 2019 to 2020, but recovered to 97% of pre‑pandemic levels by 2025.<br><br>
+            ✅ <strong>Metropolitan trains carry the most passengers</strong> (>40% share), while trams and buses each contribute ~20–25%.<br><br>
+            ✅ <strong>Metropolitan services dominate</strong> (~89% of trips), but regional V/Line trains move over 5 million people annually.<br><br>
+            ✅ <strong>Recovery has been uneven</strong>: trains bounced back fastest; buses and regional services have lagged, suggesting changed work and travel patterns.<br><br>
+            ✅ <strong>The network is Melbourne‑centric</strong>, but regional hubs are essential for statewide connectivity.
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>FIT2179 Data Visualisation 2 | Monash University, 2026</p>
+    <p>Created by Jonathan Farrell Wijaya</p>
+    <p>Data source: Transport Victoria Open Data | Public Transport Patronage (2018–2026)</p>
+</footer>
+
+<script>
+    // Helper function to safely embed charts
+    function embedChart(divId, spec) {
+        vegaEmbed(divId, spec).catch(err => console.error(`Error in ${divId}:`, err));
+    }
+
+    // ---------- CHART 1: Total patronage (line) ----------
+    const chart1 = {
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "width": "container",
+    "height": 400,
+    "title": "Total public transport patronage (2018–2026)",
+    "data": {
+        "url": "data/Dataset1.csv",
+        "format": {"type": "csv", "delimiter": ";"}
+    },
+    "transform": [
+        {
+            "aggregate": [
+                {"op": "sum", "field": "Metropolitan train", "as": "Metro Train"},
+                {"op": "sum", "field": "Metropolitan tram", "as": "Metro Tram"},
+                {"op": "sum", "field": "Metropolitan bus", "as": "Metro Bus"},
+                {"op": "sum", "field": "Regional train", "as": "Regional Train"},
+                {"op": "sum", "field": "Regional coach", "as": "Regional Coach"},
+                {"op": "sum", "field": "Regional bus", "as": "Regional Bus"}
+            ],
+            "groupby": ["Year"]
+        },
+        {
+            "fold": ["Metro Train", "Metro Tram", "Metro Bus", "Regional Train", "Regional Coach", "Regional Bus"],
+            "as": ["Mode", "Patronage"]
+        }
+    ],
+    "mark": "line",
+    "encoding": {
+        "x": {"field": "Year", "type": "ordinal", "title": "Year"},
+        "y": {"aggregate": "sum", "field": "Patronage", "type": "quantitative", "title": "Total Patronage", "format": ".0f"},
+        "color": {"value": "#1a4a6f"},
+        "tooltip": [
+            {"field": "Year", "type": "ordinal"},
+            {"field": "Patronage", "aggregate": "sum", "format": ".0f", "title": "Patronage"}
+        ]
+    }
+};
+
+    // ---------- CHART 2: Mode bar 2025 ----------
+    const chart2 = {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "width": "container", "height": 350, "title": "Patronage by mode (2025)",
+        "data": { "url": "data/Dataset1.csv", "format": { "type": "csv", "delimiter": ";" } },
+        "transform": [ { "filter": "datum.Year == 2025" }, { "fold": ["Metropolitan train","Metropolitan tram","Metropolitan bus","Regional train","Regional coach","Regional bus"], "as": ["Mode","Patronage"] } ],
+        "mark": "bar", "encoding": {
+            "x": { "field": "Mode", "type": "nominal", "title": "Mode", "sort": "-y" },
+            "y": { "aggregate": "sum", "field": "Patronage", "type": "quantitative", "title": "Patronage", "format": ".0f" },
+            "color": { "field": "Mode", "type": "nominal", "scale": { "scheme": "category10" } },
+            "tooltip": [{ "field": "Mode" }, { "field": "Patronage", "aggregate": "sum", "format": ".0f" }]
+        }
+    };
+
+    // ---------- CHART 3: Donut mode share ----------
+    const chart3 = {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "width": "container", "height": 350, "title": "Mode share (2025)",
+        "data": { "url": "data/Dataset1.csv", "format": { "type": "csv", "delimiter": ";" } },
+        "transform": [ { "filter": "datum.Year == 2025" }, { "fold": ["Metropolitan train","Metropolitan tram","Metropolitan bus","Regional train","Regional coach","Regional bus"], "as": ["Mode","Patronage"] } ],
+        "mark": { "type": "arc", "innerRadius": 60 }, "encoding": {
+            "theta": { "aggregate": "sum", "field": "Patronage", "type": "quantitative" },
+            "color": { "field": "Mode", "type": "nominal", "scale": { "scheme": "category10" } },
+            "tooltip": [{ "field": "Mode" }, { "field": "Patronage", "aggregate": "sum", "format": ".0f" }]
+        }
+    };
+
+    // ---------- CHART 4: Mode trends multi-line ----------
+    const chart4 = {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "width": "container", "height": 400, "title": "Patronage trends by mode (2018–2026)",
+        "data": { "url": "data/Dataset1.csv", "format": { "type": "csv", "delimiter": ";" } },
+        "transform": [ { "fold": ["Metropolitan train","Metropolitan tram","Metropolitan bus","Regional train","Regional coach","Regional bus"], "as": ["Mode","Patronage"] } ],
+        "mark": "line", "encoding": {
+            "x": { "field": "Year", "type": "ordinal", "title": "Year" },
+            "y": { "aggregate": "sum", "field": "Patronage", "type": "quantitative", "title": "Patronage", "format": ".0f" },
+            "color": { "field": "Mode", "type": "nominal", "scale": { "scheme": "category10" } },
+            "tooltip": [{ "field": "Year" }, { "field": "Mode" }, { "field": "Patronage", "aggregate": "sum", "format": ".0f" }]
+        }
+    };
+
+    // ---------- CHART 5: Metro vs Regional hardcoded ----------
+    const chart5 = {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "width": "container", "height": 350, "title": "Metropolitan vs Regional patronage (2025)",
+        "data": { "values": [ { "Region": "Metropolitan", "Patronage": 48100000 }, { "Region": "Regional", "Patronage": 5800000 } ] },
+        "mark": "bar", "encoding": {
+            "x": { "field": "Region", "type": "nominal", "title": "Region" },
+            "y": { "field": "Patronage", "type": "quantitative", "title": "Patronage", "format": ".0f" },
+            "color": { "field": "Region", "type": "nominal", "scale": { "scheme": "set2" } },
+            "tooltip": [{ "field": "Region" }, { "field": "Patronage", "format": ".0f" }]
+        }
+    };
+
+    // ---------- CHART 6: Yearly total bar ----------
+    const chart6 = {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "width": "container", "height": 350, "title": "Yearly total patronage",
+        "data": { "url": "data/Dataset1.csv", "format": { "type": "csv", "delimiter": ";" } },
+        "transform": [
+            { "aggregate": [ { "op": "sum", "field": "Metropolitan train", "as": "Train" }, { "op": "sum", "field": "Metropolitan tram", "as": "Tram" }, { "op": "sum", "field": "Metropolitan bus", "as": "Bus" }, { "op": "sum", "field": "Regional train", "as": "RegTrain" }, { "op": "sum", "field": "Regional coach", "as": "RegCoach" }, { "op": "sum", "field": "Regional bus", "as": "RegBus" } ], "groupby": ["Year"] },
+            { "calculate": "datum.Train + datum.Tram + datum.Bus + datum.RegTrain + datum.RegCoach + datum.RegBus", "as": "Total" }
+        ],
+        "mark": "bar", "encoding": {
+            "x": { "field": "Year", "type": "ordinal", "title": "Year" },
+            "y": { "field": "Total", "type": "quantitative", "title": "Patronage", "format": ".0f" },
+            "color": { "value": "#ffb347" }, "tooltip": [{ "field": "Year" }, { "field": "Total", "format": ".0f" }]
+        }
+    };
+
+    // ---------- CHART 7: COVID impact grouped bar ----------
+    const chart7 = {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "width": "container", "height": 400, "title": "Pandemic impact: 2019 vs 2020 vs 2021",
+        "data": { "url": "data/Dataset1.csv", "format": { "type": "csv", "delimiter": ";" } },
+        "transform": [ { "filter": "datum.Year == 2019 || datum.Year == 2020 || datum.Year == 2021" }, { "fold": ["Metropolitan train","Metropolitan tram","Metropolitan bus","Regional train","Regional coach","Regional bus"], "as": ["Mode","Patronage"] } ],
+        "mark": "bar", "encoding": {
+            "x": { "field": "Mode", "type": "nominal", "title": "Mode" },
+            "y": { "aggregate": "sum", "field": "Patronage", "type": "quantitative", "title": "Patronage", "format": ".0f" },
+            "color": { "field": "Year", "type": "ordinal", "scale": { "scheme": "reds" }, "title": "Year" },
+            "tooltip": [{ "field": "Year" }, { "field": "Mode" }, { "field": "Patronage", "aggregate": "sum", "format": ".0f" }]
+        }
+    };
+
+    // ---------- CHART 8: Recovery line 2022-2026 (metro train) ----------
+    const chart8 = {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "width": "container", "height": 350, "title": "Metro train recovery (2022–2026)",
+        "data": { "url": "data/Dataset1.csv", "format": { "type": "csv", "delimiter": ";" } },
+        "transform": [ { "filter": "datum.Year >= 2022" }, { "aggregate": [ { "op": "sum", "field": "Metropolitan train", "as": "Patronage" } ], "groupby": ["Year"] } ],
+        "mark": "line", "encoding": {
+            "x": { "field": "Year", "type": "ordinal", "title": "Year" },
+            "y": { "field": "Patronage", "type": "quantitative", "title": "Metro train patronage", "format": ".0f" },
+            "color": { "value": "#1a4a6f" }, "tooltip": [{ "field": "Year" }, { "field": "Patronage", "format": ".0f" }]
+        }
+    };
+
+    // ---------- CHART 9: Recovery rate hardcoded (2019=100) ----------
+    const chart9 = {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "width": "container", "height": 350, "title": "Recovery rate (2019 = 100%)",
+        "data": { "values": [
+            { "Year": "2019", "Type": "Metropolitan", "Index": 100 }, { "Year": "2020", "Type": "Metropolitan", "Index": 45 },
+            { "Year": "2021", "Type": "Metropolitan", "Index": 55 }, { "Year": "2022", "Type": "Metropolitan", "Index": 78 },
+            { "Year": "2023", "Type": "Metropolitan", "Index": 88 }, { "Year": "2024", "Type": "Metropolitan", "Index": 94 },
+            { "Year": "2025", "Type": "Metropolitan", "Index": 97 }, { "Year": "2026", "Type": "Metropolitan", "Index": 85 },
+            { "Year": "2019", "Type": "Regional", "Index": 100 }, { "Year": "2020", "Type": "Regional", "Index": 52 },
+            { "Year": "2021", "Type": "Regional", "Index": 60 }, { "Year": "2022", "Type": "Regional", "Index": 82 },
+            { "Year": "2023", "Type": "Regional", "Index": 90 }, { "Year": "2024", "Type": "Regional", "Index": 92 },
+            { "Year": "2025", "Type": "Regional", "Index": 88 }, { "Year": "2026", "Type": "Regional", "Index": 80 }
+        ] },
+        "mark": "line", "encoding": {
+            "x": { "field": "Year", "type": "ordinal", "title": "Year" },
+            "y": { "field": "Index", "type": "quantitative", "title": "Index (2019 = 100)", "format": ".0f" },
+            "color": { "field": "Type", "type": "nominal", "scale": { "scheme": "category10" } },
+            "tooltip": [{ "field": "Year" }, { "field": "Type" }, { "field": "Index", "format": ".0f" }]
+        }
+    };
+
+    // ========== CHART 10: Full GeoJSON Map ==========
+    const chart10 = {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "width": "container",
+        "height": 550,
+        "title": "Victoria's Public Transport Network - All Routes",
+        "data": {
+            "url": "data/public_transport_stops.geojson",
+            "format": {"type": "json", "property": "features"}
+        },
+        "projection": {
+            "type": "mercator",
+            "center": [144.5, -37.5],
+            "scale": 2500
+        },
+        "mark": {
+            "type": "geoshape",
+            "fill": "lightblue",
+            "stroke": "#1a4a6f",
+            "strokeWidth": 0.8
+        },
+        "encoding": {
+            "color": {
+                "field": "properties.MODE",  // or "properties.type", "properties.route_type"
+                "type": "nominal",
+                "scale": {"scheme": "category10"},
+                "title": "Transport Mode"
+            },
+        "tooltip": [
+            {"field": "properties.ROUTE_NAME", "title": "Route"},
+            {"field": "properties.MODE", "title": "Mode"}
+            ]
+        }
+    };
+
+    // Embed all charts
+    embedChart("#chart1", chart1);
+    embedChart("#chart2", chart2);
+    embedChart("#chart3", chart3);
+    embedChart("#chart4", chart4);
+    embedChart("#chart5", chart5);
+    embedChart("#chart6", chart6);
+    embedChart("#chart7", chart7);
+    embedChart("#chart8", chart8);
+    embedChart("#chart9", chart9);
+    embedChart("#chart10", chart10);
+</script>
+
+</body>
+</html>
